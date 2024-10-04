@@ -21,7 +21,6 @@ public class Program
         {
           // Extract the title and create the markdown filename
           string title = conversation.GetProperty("title").GetString();
-          string markdownFilename = $"{SanitizeFileName(title)}.md";
 
           // Create a StringBuilder for the markdown content
           StringBuilder markdownContent = new StringBuilder();
@@ -32,6 +31,10 @@ public class Program
 
           // Parse the "mapping" for messages
           var mapping = conversation.GetProperty("mapping");
+          string? conversationUUID = mapping.EnumerateObject().First().Value.GetProperty("id").GetString();
+          Console.WriteLine(conversationUUID);
+
+          string markdownFilename = $"{SanitizeFileName(conversationUUID)}.md";
 
           // Loop through the messages by ID in the mapping
           foreach (var messageElement in mapping.EnumerateObject())
