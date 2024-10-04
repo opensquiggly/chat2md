@@ -36,21 +36,28 @@ public class Program
           // Loop through the messages by ID in the mapping
           foreach (var messageElement in mapping.EnumerateObject())
           {
-            var message = messageElement.Value.GetProperty("message");
-            if (message.ValueKind != JsonValueKind.Null)
+            try
             {
-              var author = message.GetProperty("author").GetProperty("role").GetString();
-              var contentParts = message.GetProperty("content").GetProperty("parts").EnumerateArray();
-
-              // Append author and message content to markdown
-              markdownContent.AppendLine($"**{author}:**");
-
-              foreach (var part in contentParts)
+              var message = messageElement.Value.GetProperty("message");
+              if (message.ValueKind != JsonValueKind.Null)
               {
-                markdownContent.AppendLine(part.GetString());
-              }
+                var author = message.GetProperty("author").GetProperty("role").GetString();
+                var contentParts = message.GetProperty("content").GetProperty("parts").EnumerateArray();
 
-              markdownContent.AppendLine(); // Line break between messages
+                // Append author and message content to markdown
+                markdownContent.AppendLine($"**{author}:**");
+
+                foreach (var part in contentParts)
+                {
+                  markdownContent.AppendLine(part.GetString());
+                }
+
+                markdownContent.AppendLine(); // Line break between messages
+              }
+            }
+            catch (Exception e)
+            {
+              markdownContent.AppendLine(e.Message);
             }
           }
 
